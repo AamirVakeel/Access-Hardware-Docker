@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+
+#########################################
+####START PYTHON
+#########################################
+  nmcli-docker:
+    privileged: true      #IF FALSE THEN INDIVIDUAL DEVICE HAS TO BE CONNECTED. IF TRUE THEN VOLUME MOUNTING DOES THE JOB
+    container_name: nmclid
+    image: nmcli-docker
+    build: .
+    volumes:
+      - /dev:/dev
+      - /var/run/dbus:/var/run/dbus
+    networks:
+      pythonNet:
+        ipv4_address: 10.5.2.6
+    extra_hosts:
+      - "host.docker.internal:host-gateway" #FOR LOCAL HOST IP
+    restart: "no"
+    # entrypoint: ["bash"]
+#########################################
+####END PYTHON
+#########################################
+
+networks:
+  pythonNet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.2.0/16
+          gateway: 10.5.2.1

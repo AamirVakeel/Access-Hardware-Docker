@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+
+#########################################
+####START PYTHON
+#########################################
+  python-capture-vid:
+    privileged: true      #IF FALSE THEN INDIVIDUAL DEVICE HAS TO BE CONNECTED. IF TRUE THEN VOLUME MOUNTING DOES THE JOB
+    container_name: pvc
+    image: capturevid2
+    build: .
+    volumes:
+      - /dev:/dev
+      - /var/run/dbus:/var/run/dbus
+      - ./:/app
+    # devices:
+    #   - /dev/video0:/dev/video0
+    networks:
+      pythonNet:
+        ipv4_address: 10.5.1.6
+    extra_hosts:
+      - "host.docker.internal:host-gateway" #FOR LOCAL HOST IP
+    restart: "no"
+    # entrypoint: ["bash"]
+#########################################
+####END PYTHON
+#########################################
+
+networks:
+  pythonNet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.1.0/16
+          gateway: 10.5.1.1
